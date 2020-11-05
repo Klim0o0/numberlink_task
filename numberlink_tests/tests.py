@@ -40,7 +40,6 @@ class PointTests(unittest.TestCase):
 
     def test_get_neighbors(self):
         point = Point(0, 1)
-        print(point.get_neighbors())
         for i in point.get_neighbors():
             self.assertTrue(
                 i in [Point(0, 0), Point(-1, 1), Point(1, 1), Point(0, 2)])
@@ -48,11 +47,15 @@ class PointTests(unittest.TestCase):
 
 class SolverTests(unittest.TestCase):
 
-    def test_solve(self):
-        print()
+    def test_solve_unsolvable(self):
         self.assertEqual(
             Solver.solve(Field([[1, 0, 0], [2, 0, 0], [0, 2, 1]])),
             [])
+
+    def test_solve_solvable(self):
+        self.assertEqual(
+            Solver.solve(Field([[1, 2, 0], [0, 0, 0], [1, 0, 2]])).field,
+            [[1, 2, 2], [1, 1, 2], [1, 1, 2]])
 
 
 if __name__ == '__main__':
