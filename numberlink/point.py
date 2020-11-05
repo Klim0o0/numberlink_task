@@ -11,5 +11,8 @@ class Point:
                     neighbors.append(Point(self.x + x, self.y + y))
         return neighbors
 
-    def ecv(self,point):
-        return self.x==point.x and self.y==point.y
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y
+
+    def __ne__(self, other):
+        return self.x != other.x or self.y != other.y
