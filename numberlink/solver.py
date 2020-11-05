@@ -40,5 +40,5 @@ class Solver:
         else:
             for point in point_from.get_neighbors():
                 if field.point_in(point) and (
-                        field.get_by_point(point) == 0 or point.ecv(point_to)):
+                        field.get_by_point(point) == 0 or point==point_to):
                     Solver.find_path(point, point_to, Field(field.field), p)
