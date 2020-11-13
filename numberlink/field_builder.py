@@ -1,10 +1,10 @@
-from numberlink.field import Field
+from numberlink.field import RectangularField
 
 
 class FieldBuilder:
 
     @staticmethod
-    def build_field_from_file(file_path):
+    def build_field_from_file(field_type,file_path):
         field = []
         with open(file_path) as file:
             for line in file:
@@ -13,4 +13,4 @@ class FieldBuilder:
                     if c != '\n':
                         field_line.append(int(c))
                 field.append(field_line)
-        return Field(field)
+        return field_type(field)

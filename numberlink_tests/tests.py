@@ -19,13 +19,13 @@ class FieldTests(unittest.TestCase):
         for x in range(self.w):
             for y in range(self.h):
                 self.assertEqual(self.field.get_by_point(Point(x, y)),
-                                 self.field.field[x][y])
+                                 self.field.cells[x][y])
 
     def test_set_on_point(self):
         for x in range(self.w):
             for y in range(self.h):
                 self.field.set_on_point(Point(x, y), 3)
-                self.assertEqual(self.field.field[x][y], 3)
+                self.assertEqual(self.field.cells[x][y], 3)
 
     def test_points(self):
         self.assertEqual(list(self.field.points.keys()), [1, 2])
@@ -54,7 +54,7 @@ class SolverTests(unittest.TestCase):
 
     def test_solve_solvable(self):
         self.assertEqual(
-            Solver.solve(Field([[1, 2, 0], [0, 0, 0], [1, 0, 2]])).field,
+            Solver.solve(Field([[1, 2, 0], [0, 0, 0], [1, 0, 2]])).cells,
             [[1, 2, 2], [1, 1, 2], [1, 1, 2]])
 
 
