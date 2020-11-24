@@ -1,15 +1,14 @@
 class Point:
-    def __init__(self, x, y):
+    def __init__(self, x, y, owner: str = '0'):
         self.x = x
         self.y = y
 
-    def get_neighbors(self):
-        neighbors = []
-        for x in range(-1, 2):
-            for y in range(-1, 2):
-                if abs(x) != abs(y):
-                    neighbors.append(Point(self.x + x, self.y + y))
-        return neighbors
+    def __str__(self):
+        return 'Point( x = ' + str(self.x) \
+               + ' y = ' + str(self.y) + ')'
+
+    def __sub__(self, other):
+        return Point(self.x - other.x, self.y - other.y)
 
     def __eq__(self, other):
         return self.x == other.x and self.y == other.y
