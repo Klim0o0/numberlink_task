@@ -1,4 +1,4 @@
-from numberlink.point import Point
+from point import Point
 
 
 class Cell:

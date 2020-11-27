@@ -1,5 +1,5 @@
 import unittest
-from numberlink.field import Field
+from numberlink.fields.field import Field
 from numberlink.point import Point
 from numberlink.solver import Solver
 
