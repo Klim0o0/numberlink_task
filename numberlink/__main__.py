@@ -1,7 +1,4 @@
 import argparse
-import os
-import shutil
-
 from solver import Solver
 from fields.hexagonal_field import HexagonalField
 from fields.field import Field
@@ -75,20 +72,25 @@ def parser_arguments():
 
 
 def solve(args):
-    field = None
+    field: Field = None
     if args.type == 'rect':
         field = RectangularField.build_field_from_file(args.puzzle)
-    if args.type == 'hex':
+    elif args.type == 'hex':
         field = HexagonalField.build_field_from_file(args.puzzle)
+    else:
+        print("Not correct field type")
+        return
 
     if field is None:
         print("Not correct input")
         return
 
     print(field)
-    fields = Solver.solve(args.saves_folder, field, args.solve_count,
-                          args.line_len)
-    solve_str = get_solve_str(fields)
+    fields: List[Field] = Solver.solve(args.saves_folder, field,
+                                       args.solve_count,
+                                       args.line_len)
+
+    solve_str: str = get_solve_str(fields)
     print(solve_str)
     Saver.save_solve(args.out_file, solve_str)
 
@@ -98,6 +100,7 @@ def solve_load(args):
     fields = Solver.solve(args.saves_folder, solve_info.original_field,
                           solve_info.max_solve_count, solve_info.max_line_len,
                           solve_info.temp_solve, solve_info.solved_points)
+    print(solve_info.original_field)
     solve_str = get_solve_str(fields)
     print(solve_str)
     Saver.save_solve(args.out_file, solve_str)
@@ -107,6 +110,7 @@ def get_solve_str(fields: List[Field]) -> str:
     solve_str = ''
     if len(fields) == 0:
         return 'No solves'
+
     for i in range(len(fields)):
         paths = fields[i].get_paths()
         solve_str += 'Solve # ' + str(i + 1) + '\n'
