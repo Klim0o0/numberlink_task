@@ -14,15 +14,15 @@ class HexagonalField(Field):
                 self.center_index = x
 
     def __str__(self):
-        s = ''
+        field_str = ''
         for x in range(len(self.cells)):
-            s += ' ' * (len(self.cells[self.center_index]) - len(
+            field_str += ' ' * (len(self.cells[self.center_index]) - len(
                 self.cells[x]))
             for y in range(len(self.cells[x])):
-                s += self.cells[x][y].owner + ' '
-            s += '\n'
+                field_str += self.cells[x][y].owner + ' '
+            field_str += '\n'
 
-        return s
+        return field_str
 
     def is_correct_field(self) -> bool:
         for point in self.points.keys():
@@ -43,7 +43,7 @@ class HexagonalField(Field):
             if len(self.cells[x]) - 1 != len(self.cells[x - 1]):
                 return False
 
-        for x in range(int(len(self.cells) / 2 )+ 1, len(self.cells)):
+        for x in range(int(len(self.cells) / 2) + 1, len(self.cells)):
             if len(self.cells[x]) + 1 != len(self.cells[x - 1]):
                 return False
 
@@ -52,24 +52,24 @@ class HexagonalField(Field):
     def get_neighbors(self, point: Point) -> List[Point]:
         neighbors = Field.get_neighbors(self, point)
         if point.x < self.center_index:
-            n: List[Point] = []
+            hex_neighbors: List[Point] = []
             for i in neighbors:
                 if i not in [Point(point.x - 1, point.y + 1),
                              Point(point.x + 1, point.y - 1)]:
-                    n.append(i)
-            return n
+                    hex_neighbors.append(i)
+            return hex_neighbors
 
         if point.x > self.center_index:
-            n: List[Point] = []
+            hex_neighbors: List[Point] = []
             for i in neighbors:
                 if i not in [Point(point.x - 1, point.y - 1),
                              Point(point.x + 1, point.y + 1)]:
-                    n.append(i)
-            return n
+                    hex_neighbors.append(i)
+            return hex_neighbors
 
-        n: List[Point] = []
+        hex_neighbors: List[Point] = []
         for i in neighbors:
             if i not in [Point(point.x + 1, point.y + 1),
                          Point(point.x - 1, point.y + 1)]:
-                n.append(i)
-        return n
+                hex_neighbors.append(i)
+        return hex_neighbors

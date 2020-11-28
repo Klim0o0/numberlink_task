@@ -41,8 +41,8 @@ class Saver:
 
         if not os.path.exists(save_folder):
             os.mkdir(save_folder)
-        with open(save_folder + '/save_' + save_name + ".json",
-                  "w") as write_file:
+        with open(save_folder + '/save_' + save_name + ".json", "w") \
+                as write_file:
             json.dump(data, write_file)
 
     @classmethod

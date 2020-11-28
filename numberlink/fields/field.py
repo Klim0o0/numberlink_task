@@ -43,13 +43,12 @@ class Field:
         self.cells[point.x][point.y] = value
 
     def __str__(self):
-        s = ''
+        field_str = ''
         for x in self.cells:
             for y in x:
-                s += y.owner+ ' '
-            s+='\n'
-        return s
-
+                field_str += y.owner + ' '
+            field_str += '\n'
+        return field_str
 
     def copy(self):
         field = self.__class__(self.cells)
@@ -60,15 +59,16 @@ class Field:
     def build_field_from_file(cls, file_path):
         cells: List[List[Cell]] = []
         with open(file_path) as file:
-            text: List[str] = file.read().split('\n')
+            lines: List[str] = file.read().split('\n')
 
-            for x in range(len(text)):
+            for x in range(len(lines)):
                 field_line = []
-                t = text[x].split()
+                items = lines[x].split()
 
-                for y in range(len(t)):
-                    field_line.append(Cell(t[y]))
+                for y in range(len(items)):
+                    field_line.append(Cell(items[y]))
                 cells.append(field_line)
+
         field = cls(cells)
         if field.is_correct_field():
             return field
@@ -105,6 +105,5 @@ class Field:
                 current_point = Point(point.x + x, point.y + y)
 
                 if self.point_in(current_point):
-                    neighbors.append(
-                        current_point)
+                    neighbors.append(current_point)
         return neighbors

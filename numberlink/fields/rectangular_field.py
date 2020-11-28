@@ -10,12 +10,12 @@ class RectangularField(Field):
         Field.__init__(self, field)
 
     def __str__(self):
-        s = ''
+        field_str = ''
         for x in self.cells:
             for y in x:
-                s += y.owner+ ' '
-            s+='\n'
-        return s
+                field_str += y.owner + ' '
+            field_str += '\n'
+        return field_str
 
     def get_neighbors(self, point: Point) -> List[Point]:
         neighbors: List[Point] = []
