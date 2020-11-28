@@ -18,33 +18,35 @@ class Saver:
         with open(out_file, 'w') as file:
             file.write(solve)
 
-    @staticmethod
-    def save(save_folder, save_name: str, original_field: Field,
+    @classmethod
+    def save(cls, save_folder, save_name: str, original_field: Field,
              fields: List[Field], max_line_len: int, max_solve_cunt: int,
              solved_owners: List[str]):
         data = {}
-        data['original_field'] = Saver.convert_cells_to_lists(original_field)
+
         temp_solves: List[List[List[str]]] = []
         for field in fields:
-            temp_solves.append(Saver.convert_cells_to_lists(field))
-        data['temp_solve'] = temp_solves
-        data['max_line_len'] = max_line_len
-        data['max_solve_count'] = max_solve_cunt
-        data['field_type'] = str(type(original_field))
+            temp_solves.append(cls.convert_cells_to_lists(field))
 
         solved: List[str] = []
         for solved_owner in solved_owners:
             solved.append(solved_owner)
 
+        data['original_field'] = cls.convert_cells_to_lists(original_field)
+        data['temp_solve'] = temp_solves
+        data['max_line_len'] = max_line_len
+        data['max_solve_count'] = max_solve_cunt
+        data['field_type'] = str(type(original_field))
         data['solved_owners'] = solved
+
         if not os.path.exists(save_folder):
             os.mkdir(save_folder)
         with open(save_folder + '/save_' + save_name + ".json",
                   "w") as write_file:
             json.dump(data, write_file)
 
-    @staticmethod
-    def convert_cells_to_lists(field: Field):
+    @classmethod
+    def convert_cells_to_lists(cls, field: Field):
         cell_lists = []
         for cells_line in field.cells:
             cells = []
@@ -64,20 +66,20 @@ class Saver:
             cell_lists.append(cells)
         return cell_lists
 
-    @staticmethod
-    def delete_saves(save_folder):
+    @classmethod
+    def delete_saves(cls, save_folder):
         if os.path.exists(save_folder):
-            for file in Saver.files(save_folder):
+            for file in cls.files(save_folder):
                 os.remove(save_folder + '/' + file)
 
-    @staticmethod
-    def files(path):
+    @classmethod
+    def files(cls, path):
         for file in os.listdir(path):
             if os.path.isfile(os.path.join(path, file)):
                 yield file
 
-    @staticmethod
-    def load(path: str) -> SolveInfo:
+    @classmethod
+    def load(cls, path: str) -> SolveInfo:
         with open(path, 'r') as file:
             field_type = None
             data = json.load(file)
@@ -89,11 +91,11 @@ class Saver:
 
             temp_solve: List[Field] = []
             solved_points: List[Point] = []
-            original_field = Saver.build_field(field_type,
-                                               data["original_field"])
+            original_field = cls.build_field(field_type,
+                                             data["original_field"])
 
             for solve in data['temp_solve']:
-                temp_solve.append(Saver.build_field(field_type, solve))
+                temp_solve.append(cls.build_field(field_type, solve))
 
             max_solve_count = data['max_solve_count']
             max_line_len = data['max_line_len']
@@ -104,8 +106,8 @@ class Saver:
             return SolveInfo(original_field, temp_solve, max_line_len,
                              max_solve_count, solved_points)
 
-    @staticmethod
-    def build_field(field_type, json_field) -> Field:
+    @classmethod
+    def build_field(cls, field_type, json_field) -> Field:
         cells: List[List[Cell]] = []
         for line in json_field:
             cells_line: List[Cell] = []
