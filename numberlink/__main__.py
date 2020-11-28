@@ -4,9 +4,11 @@ import shutil
 
 from solver import Solver
 from fields.hexagonal_field import HexagonalField
+from fields.field import Field
 from fields.rectangular_field import RectangularField
 from saver import Saver
 from solve_info import SolveInfo
+from typing import *
 
 
 def parser_arguments():
@@ -14,7 +16,9 @@ def parser_arguments():
     subparsers = parser.add_subparsers()
 
     parser_append_compile = subparsers.add_parser('solve',
-                                                  help='select .txt file with puzzle and puzzle type')
+                                                  help='select .txt file'
+                                                       ' with puzzle'
+                                                       ' and puzzle type')
 
     parser_append_compile.set_defaults(function=solve)
 
@@ -22,6 +26,11 @@ def parser_arguments():
                                        default="rect",
                                        type=str,
                                        help='rect or hex')
+
+    parser_append_compile.add_argument('-o', '--out_file',
+                                       default='./solved_puzzles/output.txt',
+                                       type=str,
+                                       help='select output file')
 
     parser_append_compile.add_argument('-p', '--puzzle',
                                        default="./puzzles/input.txt",
@@ -37,9 +46,14 @@ def parser_arguments():
                                        default=-1,
                                        type=int,
                                        help='max line len')
+    parser_append_compile.add_argument('-f', '--saves_folder',
+                                       default='./saves',
+                                       type=str,
+                                       help='select folder for saves')
 
     parser_append_compile = subparsers.add_parser('solve_saved',
-                                                  help='select .txt file with puzzle and puzzle type')
+                                                  help='select .json '
+                                                       'save file')
 
     parser_append_compile.set_defaults(function=solve_load)
 
@@ -47,26 +61,17 @@ def parser_arguments():
                                        type=str,
                                        help='select save .json file')
 
+    parser_append_compile.add_argument('-o', '--out_file',
+                                       default='./solved_puzzles/output.txt',
+                                       type=str,
+                                       help='select output file')
+
+    parser_append_compile.add_argument('-f', '--saves_folder',
+                                       default='./saves',
+                                       type=str,
+                                       help='select folder for saves')
     args = parser.parse_args()
     args.function(args)
-
-
-def solve_load(args):
-    solve_indo: SolveInfo = Saver.load(args.save)
-    fields = Solver.solve(solve_indo.original_field, solve_indo.max_solve_count, solve_indo.max_line_len,
-                          solve_indo.temp_solve, solve_indo.solved_points)
-
-    if len(fields) == 0:
-        print('No solves')
-    for i in fields:
-        paths = i.get_paths()
-        for path in paths.keys():
-            s = "way for " + str(path) + " : "
-            for point in paths[path]:
-                s += str(point) + ' '
-            print(s)
-        print('\n\n')
-    pass
 
 
 def solve(args):
@@ -79,20 +84,39 @@ def solve(args):
     if field is None:
         print("Not correct input")
         return
-    print(field)
-    fields = Solver.solve(field, args.solve_count, args.line_len)
-    if len(fields) == 0:
-        print('No solves')
-    for i in fields:
-        paths = i.get_paths()
-        for path in paths.keys():
-            s = "way for " + str(path) + " : "
-            for point in paths[path]:
-                s += str(point) + ' '
-            print(s)
-        print('\n\n')
 
-    # Saver.delete_saves()
+    print(field)
+    fields = Solver.solve(args.saves_folder, field, args.solve_count,
+                          args.line_len)
+    solve_str = get_solve_str(fields)
+    print(solve_str)
+    Saver.save_solve(args.out_file, solve_str)
+
+
+def solve_load(args):
+    solve_info: SolveInfo = Saver.load(args.save)
+    fields = Solver.solve(args.saves_folder, solve_info.original_field,
+                          solve_info.max_solve_count, solve_info.max_line_len,
+                          solve_info.temp_solve, solve_info.solved_points)
+    solve_str = get_solve_str(fields)
+    print(solve_str)
+    Saver.save_solve(args.out_file, solve_str)
+
+
+def get_solve_str(fields: List[Field]) -> str:
+    solve_str = ''
+    if len(fields) == 0:
+        return 'No solves'
+    for i in range(len(fields)):
+        paths = fields[i].get_paths()
+        solve_str += 'Solve # ' + str(i + 1) + '\n'
+        for path in paths.keys():
+            solve_str += 'way for ' + str(path) + ' : '
+            for point in paths[path]:
+                solve_str += str(point) + ' '
+            solve_str += '\n'
+        solve_str += '\n\n'
+    return solve_str
 
 
 if __name__ == '__main__':

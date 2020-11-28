@@ -7,13 +7,20 @@ from fields.hexagonal_field import HexagonalField
 from solve_info import SolveInfo
 from point import Point
 from typing import *
-
 from cell import Cell
 
 
 class Saver:
     @staticmethod
-    def save(save_name: str, original_field: Field, fields: List[Field], max_line_len: int, max_solve_cunt: int,
+    def save_solve(out_file: str, solve: str):
+        if not os.path.exists(os.path.dirname(out_file)):
+            os.mkdir(os.path.dirname(out_file))
+        with open(out_file, 'w') as file:
+            file.write(solve)
+
+    @staticmethod
+    def save(save_folder, save_name: str, original_field: Field,
+             fields: List[Field], max_line_len: int, max_solve_cunt: int,
              solved_owners: List[str]):
         data = {}
         data['original_field'] = Saver.convert_cells_to_lists(original_field)
@@ -30,34 +37,38 @@ class Saver:
             solved.append(solved_owner)
 
         data['solved_owners'] = solved
-
-        with open("saves/save_" + save_name + ".json", "w") as write_file:
+        if not os.path.exists(save_folder):
+            os.mkdir(save_folder)
+        with open(save_folder + '/save_' + save_name + ".json",
+                  "w") as write_file:
             json.dump(data, write_file)
 
     @staticmethod
-    def convert_cells_to_lists(field: Field) -> List[List[str]]:
-        cells = []
+    def convert_cells_to_lists(field: Field):
+        cell_lists = []
         for cells_line in field.cells:
-            v = []
+            cells = []
             for cell in cells_line:
                 json_cell = []
                 json_cell.append(cell.owner)
-                if cell.previous is not None:
-                    json_cell.append([cell.previous.x, cell.previous.y])
+                if cell.previous_point is not None:
+                    json_cell.append(
+                        [cell.previous_point.x, cell.previous_point.y])
                 else:
                     json_cell.append([-1, -1])
-                if cell.next is not None:
-                    json_cell.append([cell.next.x, cell.next.y])
+                if cell.next_point is not None:
+                    json_cell.append([cell.next_point.x, cell.next_point.y])
                 else:
                     json_cell.append([-1, -1])
-                v.append(json_cell)
-            cells.append(v)
-        return cells
+                cells.append(json_cell)
+            cell_lists.append(cells)
+        return cell_lists
 
     @staticmethod
-    def delete_saves():
-        for file in Saver.files('./saves'):
-            os.remove('./saves/' + file)
+    def delete_saves(save_folder):
+        if os.path.exists(save_folder):
+            for file in Saver.files(save_folder):
+                os.remove(save_folder + '/' + file)
 
     @staticmethod
     def files(path):
@@ -70,24 +81,28 @@ class Saver:
         with open(path, 'r') as file:
             field_type = None
             data = json.load(file)
-            if data['field_type'] == "<class 'fields.hexagonal_field.HexagonalField'>":
+            if data['field_type'] \
+                    == "<class 'fields.hexagonal_field.HexagonalField'>":
                 field_type = HexagonalField
             else:
                 field_type = RectangularField
 
-            original_field = Saver.build_field(field_type, data["original_field"])
-
             temp_solve: List[Field] = []
+            solved_points: List[Point] = []
+            original_field = Saver.build_field(field_type,
+                                               data["original_field"])
+
             for solve in data['temp_solve']:
                 temp_solve.append(Saver.build_field(field_type, solve))
+
             max_solve_count = data['max_solve_count']
             max_line_len = data['max_line_len']
 
-            solved_points: List[Point] = []
             for owner in data['solved_owners']:
                 solved_points.append(owner)
 
-            return SolveInfo(original_field, temp_solve, max_line_len, max_solve_count, solved_points)
+            return SolveInfo(original_field, temp_solve, max_line_len,
+                             max_solve_count, solved_points)
 
     @staticmethod
     def build_field(field_type, json_field) -> Field:
@@ -95,13 +110,13 @@ class Saver:
         for line in json_field:
             cells_line: List[Cell] = []
             for cell in line:
-                previous = Point(cell[1][0], cell[1][1])
-                next = Point(cell[2][0], cell[2][1])
-                if previous.x == -1:
-                    previous = None
-                if next.x == -1:
-                    next = None
+                previous_point = Point(cell[1][0], cell[1][1])
+                next_point = Point(cell[2][0], cell[2][1])
+                if previous_point.x == -1:
+                    previous_point = None
+                if next_point.x == -1:
+                    next_point = None
                 owner = cell[0]
-                cells_line.append(Cell(owner, previous, next))
+                cells_line.append(Cell(owner, previous_point, next_point))
             cells.append(cells_line)
         return field_type(cells)

@@ -13,8 +13,8 @@ class Field:
             new_line = []
             for y in range(len(field[x])):
                 new_line.append(Cell(field[x][y].owner,
-                                     field[x][y].previous,
-                                     field[x][y].next))
+                                     field[x][y].previous_point,
+                                     field[x][y].next_point))
 
                 if field[x][y].owner != '0':
                     if self.points.get(field[x][y].owner) is None:
@@ -26,16 +26,15 @@ class Field:
             self.cells.append(new_line)
 
     def get_paths(self):
-        s = ''
-        slove: Dict[int:List[Point]] = {}
+        solve: Dict[str:List[Point]] = {}
         for owner in self.points.keys():
             current_point = self[self.points[owner][0]]
             path: List[Point] = [self.points[owner][0]]
-            while current_point.next is not None:
-                path.append(current_point.next)
-                current_point = self[current_point.next]
-            slove[owner] = path
-        return slove
+            while current_point.next_point is not None:
+                path.append(current_point.next_point)
+                current_point = self[current_point.next_point]
+            solve[owner] = path
+        return solve
 
     def __getitem__(self, point: Point) -> Cell:
         return self.cells[point.x][point.y]
