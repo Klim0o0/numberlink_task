@@ -44,9 +44,9 @@ class Field:
 
     def __str__(self):
         field_str = ''
-        for x in self.cells:
-            for y in x:
-                field_str += y.owner + ' '
+        for cells_line in self.cells:
+            for cell in cells_line:
+                field_str += cell.owner + ' '
             field_str += '\n'
         return field_str
 

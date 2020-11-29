@@ -53,23 +53,23 @@ class HexagonalField(Field):
         neighbors = Field.get_neighbors(self, point)
         if point.x < self.center_index:
             hex_neighbors: List[Point] = []
-            for i in neighbors:
-                if i not in [Point(point.x - 1, point.y + 1),
-                             Point(point.x + 1, point.y - 1)]:
-                    hex_neighbors.append(i)
+            for neighbor in neighbors:
+                if neighbor not in [Point(point.x - 1, point.y + 1),
+                                    Point(point.x + 1, point.y - 1)]:
+                    hex_neighbors.append(neighbor)
             return hex_neighbors
 
         if point.x > self.center_index:
             hex_neighbors: List[Point] = []
-            for i in neighbors:
-                if i not in [Point(point.x - 1, point.y - 1),
-                             Point(point.x + 1, point.y + 1)]:
-                    hex_neighbors.append(i)
+            for neighbor in neighbors:
+                if neighbor not in [Point(point.x - 1, point.y - 1),
+                                    Point(point.x + 1, point.y + 1)]:
+                    hex_neighbors.append(neighbor)
             return hex_neighbors
 
         hex_neighbors: List[Point] = []
-        for i in neighbors:
-            if i not in [Point(point.x + 1, point.y + 1),
-                         Point(point.x - 1, point.y + 1)]:
-                hex_neighbors.append(i)
+        for neighbor in neighbors:
+            if neighbor not in [Point(point.x + 1, point.y + 1),
+                                Point(point.x - 1, point.y + 1)]:
+                hex_neighbors.append(neighbor)
         return hex_neighbors

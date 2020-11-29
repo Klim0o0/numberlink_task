@@ -3,7 +3,8 @@ from typing import *
 
 
 class SolveInfo:
-    def __init__(self, original_field: Field, temp_solve: List[Field], max_line_len: int, max_solve_count: int,
+    def __init__(self, original_field: Field, temp_solve: List[Field],
+                 max_line_len: int, max_solve_count: int,
                  solved_points: List[str]):
         self.original_field = original_field
         self.temp_solve = temp_solve

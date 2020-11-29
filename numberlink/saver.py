@@ -24,7 +24,7 @@ class Saver:
              solved_owners: List[str]):
         data = {}
 
-        temp_solves: List[List[List[str]]] = []
+        temp_solves = []
         for field in fields:
             temp_solves.append(cls.convert_cells_to_lists(field))
 
@@ -51,8 +51,7 @@ class Saver:
         for cells_line in field.cells:
             cells = []
             for cell in cells_line:
-                json_cell = []
-                json_cell.append(cell.owner)
+                json_cell = [cell.owner]
                 if cell.previous_point is not None:
                     json_cell.append(
                         [cell.previous_point.x, cell.previous_point.y])
@@ -81,7 +80,6 @@ class Saver:
     @classmethod
     def load(cls, path: str) -> SolveInfo:
         with open(path, 'r') as file:
-            field_type = None
             data = json.load(file)
             if data['field_type'] \
                     == "<class 'fields.hexagonal_field.HexagonalField'>":
