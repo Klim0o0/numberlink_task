@@ -85,12 +85,11 @@ def solve(args):
         print("Not correct input")
         return
 
-    print(field)
     fields: List[Field] = Solver.solve(args.saves_folder, field,
                                        args.solve_count,
                                        args.line_len)
 
-    solve_str: str = get_solve_str(fields)
+    solve_str: str = get_solve_str(field, fields)
     print(solve_str)
     Saver.save_solve(args.out_file, solve_str)
 
@@ -100,14 +99,14 @@ def solve_load(args):
     fields = Solver.solve(args.saves_folder, solve_info.original_field,
                           solve_info.max_solve_count, solve_info.max_line_len,
                           solve_info.temp_solve, solve_info.solved_points)
-    print(solve_info.original_field)
-    solve_str = get_solve_str(fields)
+
+    solve_str = get_solve_str(solve_info.original_field, fields)
     print(solve_str)
     Saver.save_solve(args.out_file, solve_str)
 
 
-def get_solve_str(fields: List[Field]) -> str:
-    solve_str = ''
+def get_solve_str(original_field, fields: List[Field]) -> str:
+    solve_str = str(original_field) + '\n\n'
     if len(fields) == 0:
         return 'No solves'
 
