@@ -1,19 +1,18 @@
-from fields.field import Field
-from cell import Cell
-from point import Point
+from numberlink.fields.field import Field
+from numberlink.point import Point
 from typing import *
 
 
 class RectangularField(Field):
 
-    def __init__(self, field: List[List[Cell]]):
-        Field.__init__(self, field)
+    def __init__(self, field: List[List[str]]):
+        super(RectangularField, self).__init__(field)
 
     def __str__(self):
         field_str = ''
         for cells_line in self.cells:
             for cell in cells_line:
-                field_str += cell.owner + ' '
+                field_str += cell + ' '
             field_str += '\n'
         return field_str
 

@@ -1,63 +1,38 @@
-from cell import Cell
-from point import Point
+from numberlink.point import Point
 from typing import *
 
 
 class Field:
 
-    def __init__(self, field: List[List[Cell]]):
+    def __init__(self, field: List[List[str]]):
         self.points: Dict[str, List[Point]] = {}
-        self.cells: List[List[Cell]] = []
+        self.cells: List[List[str]] = field
+        self.cells_count = 0
 
         for x in range(len(field)):
-            new_line = []
             for y in range(len(field[x])):
-                new_line.append(Cell(field[x][y].owner,
-                                     field[x][y].previous_point,
-                                     field[x][y].next_point))
-
-                if field[x][y].owner != '0':
-                    if self.points.get(field[x][y].owner) is None:
-                        self.points[field[x][y].owner] = [Point(x, y)]
+                self.cells_count += 1
+                if field[x][y] != '0':
+                    if self.points.get(field[x][y]) is None:
+                        self.points[field[x][y]] = [Point(x, y)]
                     else:
-                        self.points[field[x][y].owner].append(
+                        self.points[field[x][y]].append(
                             Point(x, y))
 
-            self.cells.append(new_line)
-
-    def get_paths(self):
-        solve: Dict[str:List[Point]] = {}
-        for owner in self.points.keys():
-            current_point = self[self.points[owner][0]]
-            path: List[Point] = [self.points[owner][0]]
-            while current_point.next_point is not None:
-                path.append(current_point.next_point)
-                current_point = self[current_point.next_point]
-            solve[owner] = path
-        return solve
-
-    def __getitem__(self, point: Point) -> Cell:
+    def __getitem__(self, point: Point) -> str:
         return self.cells[point.x][point.y]
-
-    def __setitem__(self, point, value):
-        self.cells[point.x][point.y] = value
 
     def __str__(self):
         field_str = ''
         for cells_line in self.cells:
             for cell in cells_line:
-                field_str += cell.owner + ' '
+                field_str += cell + ' '
             field_str += '\n'
         return field_str
 
-    def copy(self):
-        field = self.__class__(self.cells)
-        field.points = self.points
-        return field
-
     @classmethod
     def build_field_from_file(cls, file_path):
-        cells: List[List[Cell]] = []
+        cells: List[List[str]] = []
         with open(file_path) as file:
             lines: List[str] = file.read().split('\n')
 
@@ -66,7 +41,7 @@ class Field:
                 items = lines[x].split()
 
                 for y in range(len(items)):
-                    field_line.append(Cell(items[y]))
+                    field_line.append(items[y])
                 cells.append(field_line)
 
         field = cls(cells)
@@ -74,23 +49,8 @@ class Field:
             return field
         return None
 
-    @classmethod
-    def build_field_from_array(cls, field: List[List[str]]):
-        cells = cls.get_cells(field)
-        return cls(cells)
-
     def is_correct_field(self) -> bool:
         return True
-
-    @classmethod
-    def get_cells(cls, field: List[List[str]]) -> List[List[Cell]]:
-        cells: List[List[Cell]] = []
-        for x in range(len(field)):
-            cells_line: List[Cell] = []
-            for y in range(len(field[x])):
-                cells_line.append(Cell(str(field[x][y])))
-            cells.append(cells_line)
-        return cells
 
     def point_in(self, point) -> bool:
         return 0 <= point.x < len(self.cells) \

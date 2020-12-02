@@ -1,12 +1,11 @@
-from cell import Cell
-from fields.field import Field
-from point import Point
+from numberlink.fields.field import Field
+from numberlink.point import Point
 from typing import *
 
 
 class HexagonalField(Field):
-    def __init__(self, field: List[List[Cell]]):
-        Field.__init__(self, field)
+    def __init__(self, field: List[List[str]]):
+        super(HexagonalField, self).__init__(field)
         max_len: int = 0
         for x in range(len(self.cells)):
             if len(self.cells[x]) > max_len:
@@ -19,7 +18,7 @@ class HexagonalField(Field):
             field_str += ' ' * (len(self.cells[self.center_index]) - len(
                 self.cells[x]))
             for y in range(len(self.cells[x])):
-                field_str += self.cells[x][y].owner + ' '
+                field_str += self.cells[x][y] + ' '
             field_str += '\n'
 
         return field_str

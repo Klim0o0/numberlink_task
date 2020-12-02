@@ -1,11 +1,11 @@
 import argparse
-from solver import Solver
-from fields.hexagonal_field import HexagonalField
-from fields.field import Field
-from fields.rectangular_field import RectangularField
-from saver import Saver
-from solve_info import SolveInfo
+from numberlink.solver import Solver
+from numberlink.fields.hexagonal_field import HexagonalField
+from numberlink.fields.field import Field
+from numberlink.fields.rectangular_field import RectangularField
 from typing import *
+
+from numberlink.path import Path
 
 
 def parser_arguments():
@@ -85,40 +85,34 @@ def solve(args):
         print("Not correct input")
         return
 
-    fields: List[Field] = Solver.solve(args.saves_folder, field,
-                                       args.solve_count,
-                                       args.line_len)
+    solver = Solver(field)
+
+    fields: List[Field] = solver.solve()
 
     solve_str: str = get_solve_str(field, fields)
     print(solve_str)
-    Saver.save_solve(args.out_file, solve_str)
 
 
 def solve_load(args):
-    solve_info: SolveInfo = Saver.load(args.save)
-    fields = Solver.solve(args.saves_folder, solve_info.original_field,
-                          solve_info.max_solve_count, solve_info.max_line_len,
-                          solve_info.temp_solve, solve_info.solved_points)
+    pass
+    # solve_info: SolveInfo = Saver.load(args.save)
+    # fields = Solver.solve(args.saves_folder, solve_info.original_field,
+    #                       solve_info.max_solve_count, solve_info.max_line_len,
+    #                       solve_info.temp_solve, solve_info.solved_points)
+    #
+    # solve_str = get_solve_str(solve_info.original_field, fields)
+    # print(solve_str)
+    # Saver.save_solve(args.out_file, solve_str)
 
-    solve_str = get_solve_str(solve_info.original_field, fields)
-    print(solve_str)
-    Saver.save_solve(args.out_file, solve_str)
 
-
-def get_solve_str(original_field, fields: List[Field]) -> str:
+def get_solve_str(original_field, fields: List[Path]) -> str:
     solve_str = str(original_field) + '\n\n'
     if len(fields) == 0:
         return 'No solves'
 
     for i in range(len(fields)):
-        paths = fields[i].get_paths()
-        solve_str += 'Solve # ' + str(i + 1) + '\n'
-        for path in paths.keys():
-            solve_str += 'way for ' + str(path) + ' : '
-            for point in paths[path]:
-                solve_str += str(point) + ' '
-            solve_str += '\n'
-        solve_str += '\n\n'
+        path = fields[i]
+        solve_str += 'Solve # ' + str(i + 1) + '\n' + str(path) + '\n'
     return solve_str
 
 

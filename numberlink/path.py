@@ -16,3 +16,14 @@ class Path:
                 and self.parent_path.is_point_in_path(point):
             return True
         return False
+
+    def __str__(self):
+        path_str = ''
+        path = self
+        while path is not None:
+            path_str += 'way for ' + str(path.owner) + ": "
+            for point in path.path:
+                path_str += str(point) + ' '
+            path_str += '\n'
+            path = path.parent_path
+        return path_str
