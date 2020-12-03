@@ -8,8 +8,12 @@ class Path:
         self.parent_path = parent_path
         self.owner = owner
         self.path = path
+        self.children_paths = []
 
-    def is_point_in_path(self, point: Point):
+    def add_children_path(self, path):
+        self.children_paths.append(path)
+
+    def is_point_in_path(self, point: Point) -> bool:
         if point in self.path:
             return True
         if self.parent_path is not None \

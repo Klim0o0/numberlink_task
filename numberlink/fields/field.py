@@ -1,5 +1,5 @@
+from typing import Dict, List
 from numberlink.point import Point
-from typing import *
 
 
 class Field:

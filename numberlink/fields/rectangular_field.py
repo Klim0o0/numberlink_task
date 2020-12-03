@@ -1,6 +1,7 @@
+from typing import List
+
 from numberlink.fields.field import Field
 from numberlink.point import Point
-from typing import *
 
 
 class RectangularField(Field):

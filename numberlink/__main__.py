@@ -1,9 +1,11 @@
 import argparse
+import sys
+from typing import List
+
+from numberlink.saver import Saver
 from numberlink.solver import Solver
 from numberlink.fields.hexagonal_field import HexagonalField
-from numberlink.fields.field import Field
 from numberlink.fields.rectangular_field import RectangularField
-from typing import *
 
 from numberlink.path import Path
 
@@ -19,7 +21,12 @@ def parser_arguments():
 
     parser_append_compile.set_defaults(function=solve)
 
-    parser_append_compile.add_argument('-t', '--type',
+    parser_append_compile.add_argument('puzzle',
+                                       default="./puzzles/input.txt",
+                                       type=str,
+                                       help='select .txt file')
+
+    parser_append_compile.add_argument('type',
                                        default="rect",
                                        type=str,
                                        help='rect or hex')
@@ -28,11 +35,6 @@ def parser_arguments():
                                        default='./solved_puzzles/output.txt',
                                        type=str,
                                        help='select output file')
-
-    parser_append_compile.add_argument('-p', '--puzzle',
-                                       default="./puzzles/input.txt",
-                                       type=str,
-                                       help='select .txt file')
 
     parser_append_compile.add_argument('-c', '--solve_count',
                                        default=-1,
@@ -43,8 +45,8 @@ def parser_arguments():
                                        default=-1,
                                        type=int,
                                        help='max line len')
-    parser_append_compile.add_argument('-f', '--saves_folder',
-                                       default='./saves',
+    parser_append_compile.add_argument('-f', '--save_file',
+                                       default='./saves/save.json',
                                        type=str,
                                        help='select folder for saves')
 
@@ -54,7 +56,7 @@ def parser_arguments():
 
     parser_append_compile.set_defaults(function=solve_load)
 
-    parser_append_compile.add_argument('-s', '--save',
+    parser_append_compile.add_argument('save',
                                        type=str,
                                        help='select save .json file')
 
@@ -63,16 +65,26 @@ def parser_arguments():
                                        type=str,
                                        help='select output file')
 
-    parser_append_compile.add_argument('-f', '--saves_folder',
-                                       default='./saves',
+    parser_append_compile.add_argument('-f', '--save_file',
+                                       default='./saves/save.json',
                                        type=str,
                                        help='select folder for saves')
     args = parser.parse_args()
-    args.function(args)
+    if not hasattr(args, 'function'):
+        print('Error: Select solve/solve_saved')
+        sys.exit(1)
+
+    try:
+        args.function(args)
+    except KeyboardInterrupt:
+        print('Interrupt solve')
+    except OSError:
+        print("OSError")
+    except Exception:
+        print('Not valid parameters')
 
 
 def solve(args):
-    field: Field = None
     if args.type == 'rect':
         field = RectangularField.build_field_from_file(args.puzzle)
     elif args.type == 'hex':
@@ -85,24 +97,20 @@ def solve(args):
         print("Not correct input")
         return
 
-    solver = Solver(field)
-
-    fields: List[Field] = solver.solve()
-
-    solve_str: str = get_solve_str(field, fields)
+    solver = Solver(field, Saver(args.save_file))
+    paths: List[Path] = solver.solve()
+    solve_str: str = get_solve_str(field, paths)
     print(solve_str)
+    Saver.save_solve(solve_str, args.out_file)
 
 
 def solve_load(args):
-    pass
-    # solve_info: SolveInfo = Saver.load(args.save)
-    # fields = Solver.solve(args.saves_folder, solve_info.original_field,
-    #                       solve_info.max_solve_count, solve_info.max_line_len,
-    #                       solve_info.temp_solve, solve_info.solved_points)
-    #
-    # solve_str = get_solve_str(solve_info.original_field, fields)
-    # print(solve_str)
-    # Saver.save_solve(args.out_file, solve_str)
+    saver = Saver(args.saves_folder)
+    solver = saver.load()
+    paths: List[Path] = solver.solve()
+    solve_str: str = get_solve_str(solver.field, paths)
+    print(solve_str)
+    Saver.save_solve(solve_str, args.out_file)
 
 
 def get_solve_str(original_field, fields: List[Path]) -> str:

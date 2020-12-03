@@ -1,0 +1,3 @@
+[tool.coverage.run]
+source = ["numberlink"]
+omit = ["*/main.py", ".venv/","*/utils.py","*/saver.py"]
