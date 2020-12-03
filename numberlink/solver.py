@@ -16,7 +16,6 @@ class Solver:
         self.solved_owners = set()
 
     def solve(self) -> List[Path]:
-
         for owner in self.field.points:
             if owner in self.solved_owners:
                 continue
@@ -35,7 +34,6 @@ class Solver:
 
     def find_path(self, current: Point, target: Point, parent_path: Path,
                   path: List[Point]) -> List[Path]:
-
         path.append(current)
 
         if len(path) == self.max_line_len:
