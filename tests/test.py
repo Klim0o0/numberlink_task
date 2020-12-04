@@ -123,5 +123,18 @@ class SolverTests(unittest.TestCase):
         self.assertEqual(paths, [])
 
 
+class SaverTests(unittest.TestCase):
+
+    def test_save_load(self):
+        saver = Saver('./saves/save_test.json')
+        solver = Solver(RectangularField([['1', '1'], ['0', '0']]), saver)
+        solver.solve()
+        saver.save(solver)
+        loaded_saver = saver.load()
+        self.assertEqual(solver.field.cells, loaded_saver.field.cells)
+        self.assertEqual(len(solver.parent_paths),
+                         len(loaded_saver.parent_paths))
+
+
 if __name__ == '__main__':
     unittest.main()

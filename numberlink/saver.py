@@ -48,6 +48,8 @@ class Saver:
         else:
             field = HexagonalField(data['field'])
         paths = Utils.get_lover_paths(Utils.complete_pats(data['paths'], None))
+        if len(paths) == 0:
+            paths.append(None)
         solver = Solver(field, self)
         solver.max_solve_count = max_solve_count
         solver.max_line_len = max_line_len

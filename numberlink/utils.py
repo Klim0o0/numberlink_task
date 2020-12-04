@@ -23,7 +23,7 @@ class Utils:
         for path_data in paths_data:
             path: Path = Path(parent_pats, path_data['owner'],
                               cls.ints_list_to_points_list(path_data['path']))
-            for sub_path in cls._complete_pats(path_data['sub_paths'],
+            for sub_path in cls.complete_pats(path_data['sub_paths'],
                                                path):
                 path.add_children_path(sub_path)
             paths.append(path)
