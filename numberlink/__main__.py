@@ -74,9 +74,8 @@ def parser_arguments():
         print('Error: Select solve/solve_saved')
         sys.exit(1)
 
-    args.function(args)
     try:
-        pass
+        args.function(args)
     except KeyboardInterrupt:
         print('Interrupt solve')
     except OSError:
