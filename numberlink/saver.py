@@ -1,10 +1,10 @@
 import json
-import os
+from pathlib import Path
 from typing import List
 from numberlink.fields.field import Field
 from numberlink.fields.rectangular_field import RectangularField
 from numberlink.fields.hexagonal_field import HexagonalField
-from numberlink.path import Path
+from numberlink.solve_path import SolvePath
 from numberlink.solver import Solver
 from numberlink.utils import Utils
 
@@ -15,7 +15,7 @@ class Saver:
         self.i = 1
 
     def save(self, solver):
-        paths: List[Path] = solver.parent_paths
+        paths: List[SolvePath] = solver.parent_paths
         field: Field = solver.field
         max_line_len = solver.max_line_len
         max_solve_count = solver.max_solve_count
@@ -31,8 +31,7 @@ class Saver:
         data['max_line_len'] = max_line_len
         data['paths'] = paths_data
 
-        if not os.path.exists(self.file):
-            os.mkdir(os.path.dirname(self.file))
+        self.create_folders_if_is_need(Path(self.file))
 
         with open(self.file, 'w') as file:
             json.dump(data, file)
@@ -57,9 +56,15 @@ class Saver:
         solver.solved_owners = Utils.get_solved_owners(paths)
         return solver
 
-    @staticmethod
-    def save_solve(solve: str, file_path: str):
-        if not os.path.exists(file_path):
-            os.mkdir(os.path.dirname(file_path))
+    @classmethod
+    def save_solve(cls, solve: str, file_path: str):
+        cls.create_folders_if_is_need(Path(file_path))
         with open(file_path, 'w') as file:
             file.write(solve)
+
+    @classmethod
+    def create_folders_if_is_need(cls, path: Path):
+        parents = path.parents
+        for i in range(len(parents) - 1, -1, -1):
+            if not parents[i].exists():
+                parents[i].mkdir()

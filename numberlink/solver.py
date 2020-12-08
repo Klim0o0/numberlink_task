@@ -1,7 +1,7 @@
 from typing import List
 
 from numberlink.fields.field import Field
-from numberlink.path import Path
+from numberlink.solve_path import SolvePath
 from numberlink.point import Point
 
 
@@ -12,15 +12,15 @@ class Solver:
         self.max_solve_count = -1
         self.max_line_len = -1
         self.saver = saver
-        self.parent_paths: List[Path] = [None]
+        self.parent_paths: List[SolvePath] = [None]
         self.solved_owners = set()
 
-    def solve(self) -> List[Path]:
+    def solve(self) -> List[SolvePath]:
         for owner in self.field.points:
             if owner in self.solved_owners:
                 continue
 
-            temp_parent_paths: List[Path] = []
+            temp_parent_paths: List[SolvePath] = []
             for parent_path in self.parent_paths:
                 temp_parent_paths += self.find_path(
                     self.field.points[owner][0],
@@ -32,20 +32,20 @@ class Solver:
             self.solved_owners.add(owner)
         return self.find_correct_paths(self.parent_paths)
 
-    def find_path(self, current: Point, target: Point, parent_path: Path,
-                  path: List[Point]) -> List[Path]:
+    def find_path(self, current: Point, target: Point, parent_path: SolvePath,
+                  path: List[Point]) -> List[SolvePath]:
         path.append(current)
 
         if len(path) == self.max_line_len:
             return []
 
         if current == target:
-            children_paths = Path(parent_path, self.field[target], path)
+            children_paths = SolvePath(parent_path, self.field[target], path)
             if parent_path is not None:
                 parent_path.add_children_path(children_paths)
             return [children_paths]
 
-        paths: List[Path] = []
+        paths: List[SolvePath] = []
         for neighbor in self.field.get_neighbors(current):
             if target != neighbor \
                     and (self.field[neighbor] != '0'
@@ -60,8 +60,8 @@ class Solver:
                 paths.append(current_path)
         return paths
 
-    def find_correct_paths(self, paths: List[Path]) -> List[Path]:
-        correct_paths: List[Path] = []
+    def find_correct_paths(self, paths: List[SolvePath]) -> List[SolvePath]:
+        correct_paths: List[SolvePath] = []
         for path in paths:
             if len(correct_paths) == self.max_solve_count:
                 return correct_paths
@@ -69,7 +69,7 @@ class Solver:
                 correct_paths.append(path)
         return correct_paths
 
-    def is_correct_path(self, path: Path) -> bool:
+    def is_correct_path(self, path: SolvePath) -> bool:
         count = 0
         while path is not None:
             count += len(path.path)

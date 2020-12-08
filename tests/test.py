@@ -2,7 +2,7 @@ import unittest
 from numberlink.fields.field import Field
 from numberlink.fields.hexagonal_field import HexagonalField
 from numberlink.fields.rectangular_field import RectangularField
-from numberlink.path import Path
+from numberlink.solve_path import SolvePath
 from numberlink.point import Point
 from numberlink.saver import Saver
 from numberlink.solver import Solver
@@ -78,7 +78,7 @@ class FakeSaver(Saver):
 class PathTests(unittest.TestCase):
 
     def test_path(self):
-        path = Path(None, 1, [Point(0, 0)])
+        path = SolvePath(None, 1, [Point(0, 0)])
         self.assertEqual(str(path), 'way for 1: Point( x = 0 y = 0) \n')
 
 

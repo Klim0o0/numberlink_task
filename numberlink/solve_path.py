@@ -3,7 +3,7 @@ from typing import List
 from numberlink.point import Point
 
 
-class Path:
+class SolvePath:
     def __init__(self, parent_path, owner: str, path: List[Point]):
         self.parent_path = parent_path
         self.owner = owner

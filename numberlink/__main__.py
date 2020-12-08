@@ -7,7 +7,7 @@ from numberlink.solver import Solver
 from numberlink.fields.hexagonal_field import HexagonalField
 from numberlink.fields.rectangular_field import RectangularField
 
-from numberlink.path import Path
+from numberlink.solve_path import SolvePath
 
 
 def parser_arguments():
@@ -78,8 +78,6 @@ def parser_arguments():
         args.function(args)
     except KeyboardInterrupt:
         print('Interrupt solve')
-    except OSError:
-        print("OSError")
     except Exception:
         print('Not valid parameters')
 
@@ -98,7 +96,7 @@ def solve(args):
         return
 
     solver = Solver(field, Saver(args.save_file))
-    paths: List[Path] = solver.solve()
+    paths: List[SolvePath] = solver.solve()
     solve_str: str = get_solve_str(field, paths)
     print(solve_str)
     Saver.save_solve(solve_str, args.out_file)
@@ -107,13 +105,13 @@ def solve(args):
 def solve_load(args):
     saver = Saver(args.saves_folder)
     solver = saver.load()
-    paths: List[Path] = solver.solve()
+    paths: List[SolvePath] = solver.solve()
     solve_str: str = get_solve_str(solver.field, paths)
     print(solve_str)
     Saver.save_solve(solve_str, args.out_file)
 
 
-def get_solve_str(original_field, fields: List[Path]) -> str:
+def get_solve_str(original_field, fields: List[SolvePath]) -> str:
     solve_str = str(original_field) + '\n\n'
     if len(fields) == 0:
         return 'No solves'
