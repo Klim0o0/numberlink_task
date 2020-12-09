@@ -79,7 +79,7 @@ class PathTests(unittest.TestCase):
 
     def test_path(self):
         path = SolvePath(None, 1, [Point(0, 0)])
-        self.assertEqual(str(path), 'way for 1: Point( x = 0 y = 0) \n')
+        self.assertEqual(str(path), 'way for 1: Point(x=0, y=0) \n')
 
 
 class SolverTests(unittest.TestCase):
