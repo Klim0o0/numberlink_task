@@ -14,15 +14,15 @@ class HexagonalField(Field):
                 self.center_index = x
 
     def __str__(self):
-        field_str = ''
+        field: List[str] = []
         for x in range(len(self.cells)):
-            field_str += ' ' * (len(self.cells[self.center_index]) - len(
-                self.cells[x]))
+            field.append(' ' * (len(self.cells[self.center_index]) - len(
+                self.cells[x])))
             for y in range(len(self.cells[x])):
-                field_str += self.cells[x][y] + ' '
-            field_str += '\n'
+                field.append(self.cells[x][y]+' ')
+            field.append('\n')
 
-        return field_str
+        return ''.join(field)
 
     def is_correct_field(self) -> bool:
         for point in self.points.keys():

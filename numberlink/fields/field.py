@@ -23,12 +23,12 @@ class Field:
         return self.cells[point.x][point.y]
 
     def __str__(self):
-        field_str = ''
+        field: List[str] = []
         for cells_line in self.cells:
             for cell in cells_line:
-                field_str += cell + ' '
-            field_str += '\n'
-        return field_str
+                field.append(cell+' ')
+            field.append('\n')
+        return ''.join(field)
 
     @classmethod
     def build_field_from_file(cls, file_path):

@@ -22,12 +22,12 @@ class SolvePath:
         return False
 
     def __str__(self):
-        path_str = ''
+        path_str: List[str] = []
         path = self
         while path is not None:
-            path_str += 'way for ' + str(path.owner) + ": "
+            path_str.append('way for ' + str(path.owner) + ': ')
             for point in path.path:
-                path_str += str(point) + ' '
-            path_str += '\n'
+                path_str.append(str(point) + ' ')
+            path_str.append('\n')
             path = path.parent_path
-        return path_str
+        return ''.join(path_str)

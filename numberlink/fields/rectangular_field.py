@@ -10,12 +10,7 @@ class RectangularField(Field):
         super(RectangularField, self).__init__(field)
 
     def __str__(self):
-        field_str = ''
-        for cells_line in self.cells:
-            for cell in cells_line:
-                field_str += cell + ' '
-            field_str += '\n'
-        return field_str
+        return str(super(RectangularField, self))
 
     def get_neighbors(self, point: Point) -> List[Point]:
         neighbors: List[Point] = []

@@ -112,14 +112,14 @@ def solve_load(args):
 
 
 def get_solve_str(original_field, fields: List[SolvePath]) -> str:
-    solve_str = str(original_field) + '\n\n'
+    solve_str = [str(original_field) + '\n\n']
     if len(fields) == 0:
         return 'No solves'
 
     for i in range(len(fields)):
         path = fields[i]
-        solve_str += 'Solve # ' + str(i + 1) + '\n' + str(path) + '\n'
-    return solve_str
+        solve_str.append('Solve # ' + str(i + 1) + '\n' + str(path) + '\n')
+    return ''.join(solve_str)
 
 
 if __name__ == '__main__':
