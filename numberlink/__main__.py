@@ -73,13 +73,7 @@ def parser_arguments():
     if not hasattr(args, 'function'):
         print('Error: Select solve/solve_saved')
         sys.exit(1)
-
-    try:
-        args.function(args)
-    except KeyboardInterrupt:
-        print('Interrupt solve')
-    except Exception:
-        print('Not valid parameters')
+    return args
 
 
 def solve(args):
@@ -123,4 +117,10 @@ def get_solve_str(original_field, fields: List[SolvePath]) -> str:
 
 
 if __name__ == '__main__':
-    parser_arguments()
+    args = parser_arguments()
+    try:
+        args.function(args)
+    except KeyboardInterrupt:
+        print('Interrupt solve')
+    except Exception:
+        print('Not valid parameters')
