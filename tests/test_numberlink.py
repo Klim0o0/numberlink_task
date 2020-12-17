@@ -1,4 +1,6 @@
 import unittest
+from pathlib import Path
+
 from numberlink.fields.field import Field
 from numberlink.fields.hexagonal_field import HexagonalField
 from numberlink.fields.rectangular_field import RectangularField
@@ -125,15 +127,23 @@ class SolverTests(unittest.TestCase):
 
 class SaverTests(unittest.TestCase):
 
+    def setUp(self):
+        self.saver = Saver('save_test.json')
+        self.solver = Solver(RectangularField([['1', '1'], ['0', '0']]),
+                             self.saver)
+
     def test_save_load(self):
-        saver = Saver('./saves/save_test.json')
-        solver = Solver(RectangularField([['1', '1'], ['0', '0']]), saver)
-        solver.solve()
-        saver.save(solver)
-        loaded_saver = saver.load()
-        self.assertEqual(solver.field.cells, loaded_saver.field.cells)
-        self.assertEqual(len(solver.parent_paths),
+        self.solver.solve()
+        self.saver.save(self.solver)
+        loaded_saver = self.saver.load()
+        self.assertEqual(self.solver.field.cells, loaded_saver.field.cells)
+        self.assertEqual(len(self.solver.parent_paths),
                          len(loaded_saver.parent_paths))
+
+    def tearDown(self):
+        path = Path('save_test.json')
+        if path.exists():
+            path.unlink()
 
 
 if __name__ == '__main__':

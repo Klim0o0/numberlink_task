@@ -11,7 +11,8 @@ from numberlink.utils import Utils
 
 class Saver:
     def __init__(self, file: str):
-        self.file = file
+        self.file = Path(file)
+
         self.i = 1
 
     def save(self, solver):
@@ -33,11 +34,11 @@ class Saver:
 
         self.create_folders_if_is_need(Path(self.file))
 
-        with open(self.file, 'w') as file:
+        with self.file.open('w') as file:
             json.dump(data, file)
 
     def load(self):
-        with open(self.file, 'r') as file:
+        with self.file.open('r') as file:
             data = json.load(file)
         max_line_len: int = data['max_line_len']
         max_solve_count: int = data['max_solve_count']
@@ -58,13 +59,13 @@ class Saver:
 
     @classmethod
     def save_solve(cls, solve: str, file_path: str):
-        cls.create_folders_if_is_need(Path(file_path))
-        with open(file_path, 'w') as file:
+        file_path = Path(file_path)
+        cls.create_folders_if_is_need(file_path)
+        with file_path.open('w') as file:
             file.write(solve)
 
     @classmethod
     def create_folders_if_is_need(cls, path: Path):
-        parents = path.parents
-        for i in range(len(parents) - 1, -1, -1):
-            if not parents[i].exists():
-                parents[i].mkdir()
+        parent = path.parent
+        if not parent.exists():
+            parent.mkdir(parents=True)
